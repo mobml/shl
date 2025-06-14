@@ -2,6 +2,7 @@ use parser::Parser;
 use registry::CommandRegistry;
 use std::io::{self, Write};
 
+mod commands;
 mod parser;
 mod registry;
 
@@ -18,7 +19,14 @@ impl Shl {
         };
     }
 
+    //TODO
+    // Separate function to initialize the register     [_]
+    // Implement the remaining Commands                 [_]
+    // Handle errors properly                           [_]
+
     pub fn run(&mut self) -> Result<(), ShellError> {
+        self.registry
+            .register("hello".to_string(), commands::HelloWorld::new());
         let prompt = "\x1b[32m$ \x1b[0m";
         let mut input = String::new();
         loop {
@@ -38,7 +46,10 @@ impl Shl {
                 .map_err(ShellError::from)?;
 
             match self.parser.parse(&input) {
-                Ok(command) => println!("{:?}", command),
+                Ok(command) => {
+                    println!("{:?}", &command);
+                    let _ = self.registry.command_founded(command);
+                }
                 Err(_) => eprintln!("Something wrong"),
             }
 

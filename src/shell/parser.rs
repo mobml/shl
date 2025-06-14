@@ -4,8 +4,8 @@ pub struct Parser;
 
 #[derive(Debug)]
 pub struct ParsedCommand {
-    name: String,
-    args: Vec<String>,
+    pub name: String,
+    pub args: Vec<String>,
 }
 
 impl Parser {
