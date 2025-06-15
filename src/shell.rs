@@ -20,13 +20,13 @@ impl Shl {
     }
 
     //TODO
-    // Separate function to initialize the register     [_]
+    // Separate function to initialize the register     [x]
     // Implement the remaining Commands                 [_]
     // Handle errors properly                           [_]
 
     pub fn run(&mut self) -> Result<(), ShellError> {
-        self.registry
-            .register("hello".to_string(), commands::HelloWorld::new());
+        self.registry.init_commands();
+
         let prompt = "\x1b[32m$ \x1b[0m";
         let mut input = String::new();
         loop {

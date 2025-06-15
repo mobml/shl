@@ -1,3 +1,4 @@
+use super::commands;
 use super::commands::Command;
 use super::{ShellError, parser::ParsedCommand};
 use std::collections::HashMap;
@@ -22,8 +23,12 @@ impl CommandRegistry {
         match self.commands.get(&parsed_cmd.name) {
             Some(cmd) => cmd.execute(&parsed_cmd.args),
             None => Err(ShellError::CommandNotFound(
-                "Command not founcded".to_string(),
+                "Command not founded".to_string(),
             )),
         }
+    }
+
+    pub fn init_commands(&mut self) {
+        self.register("hello".to_string(), commands::HelloWorld::new());
     }
 }
