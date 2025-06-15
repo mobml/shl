@@ -10,7 +10,7 @@ pub struct ParsedCommand {
 
 impl Parser {
     pub fn new() -> Self {
-        return Parser;
+        Parser
     }
     pub fn parse(&self, input: &str) -> Result<ParsedCommand, ShellError> {
         let input = input.trim();

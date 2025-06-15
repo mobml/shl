@@ -13,6 +13,7 @@ fn main() {
             ShellError::Parse(str) => println!("{}", str),
             ShellError::IO(_) => eprintln!("Error I/O"),
             ShellError::CommandNotFound(str) => eprintln!("{}", str),
+            ShellError::Exit => {}
         },
     }
 }

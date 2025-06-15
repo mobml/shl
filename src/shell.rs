@@ -1,5 +1,7 @@
 use parser::Parser;
 use registry::CommandRegistry;
+use std::fmt::Display;
+use std::io::stdout;
 use std::io::{self, Write};
 
 mod commands;
@@ -13,10 +15,10 @@ pub struct Shl {
 
 impl Shl {
     pub fn new() -> Self {
-        return Shl {
+        Shl {
             parser: Parser::new(),
             registry: CommandRegistry::new(),
-        };
+        }
     }
 
     //TODO
@@ -26,35 +28,28 @@ impl Shl {
 
     pub fn run(&mut self) -> Result<(), ShellError> {
         self.registry.init_commands();
+        let mut stdout = stdout();
 
         let prompt = "\x1b[32m$ \x1b[0m";
         let mut input = String::new();
         loop {
             input.clear();
-            io::stdout()
-                .write_all(prompt.as_bytes())
-                .map_err(ShellError::from)?;
-
-            io::stdout().flush().map_err(ShellError::from)?;
-
-            io::stdin()
-                .read_line(&mut input)
-                .map_err(ShellError::from)?;
-
-            io::stdout()
-                .write_all(&input.as_bytes())
-                .map_err(ShellError::from)?;
-
-            match self.parser.parse(&input) {
-                Ok(command) => {
-                    println!("{:?}", &command);
-                    let _ = self.registry.command_founded(command);
-                }
-                Err(_) => eprintln!("Something wrong"),
+            //show the prompt
+            write!(stdout, "{prompt}")?;
+            stdout.flush()?;
+            // Read user input
+            if io::stdin().read_line(&mut input)? == 0 {
+                writeln!(stdout, "\nexit")?;
+                break;
             }
 
-            if input.trim() == "exit" {
-                break;
+            match self.parser.parse(&input) {
+                Ok(command) => match self.registry.run_command(command, &mut stdout) {
+                    Err(ShellError::Exit) => break,
+                    Err(e) => writeln!(stdout, "Error: {e}")?,
+                    _ => {}
+                },
+                Err(e) => writeln!(stdout, "Parse error: {e}")?,
             }
         }
         Ok(())
@@ -67,6 +62,18 @@ pub enum ShellError {
     IO(io::Error),
     Parse(String),
     CommandNotFound(String),
+    Exit,
+}
+
+impl Display for ShellError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ShellError::IO(err) => write!(f, "I/O error: {}", err),
+            ShellError::Parse(msg) => write!(f, "Parse error: {}", msg),
+            ShellError::CommandNotFound(cmd) => write!(f, "Command \"{}\" not found", cmd),
+            ShellError::Exit => write!(f, "Exiting shell"),
+        }
+    }
 }
 
 impl From<io::Error> for ShellError {
