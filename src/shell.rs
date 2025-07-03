@@ -1,10 +1,11 @@
+use errors::ShellError;
 use parser::Parser;
 use registry::CommandRegistry;
-use std::fmt::Display;
 use std::io::stdout;
 use std::io::{self, Write};
 
 mod commands;
+pub mod errors;
 mod parser;
 mod registry;
 
@@ -28,6 +29,8 @@ impl Shl {
 
     pub fn run(&mut self) -> Result<(), ShellError> {
         self.registry.init_commands();
+        // Add home_dir
+
         let mut stdout = stdout();
 
         let prompt = "\x1b[32m$ \x1b[0m";
@@ -53,31 +56,5 @@ impl Shl {
             }
         }
         Ok(())
-    }
-}
-
-#[allow(dead_code)]
-#[derive(Debug)]
-pub enum ShellError {
-    IO(io::Error),
-    Parse(String),
-    CommandNotFound(String),
-    Exit,
-}
-
-impl Display for ShellError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            ShellError::IO(err) => write!(f, "I/O error: {}", err),
-            ShellError::Parse(msg) => write!(f, "Parse error: {}", msg),
-            ShellError::CommandNotFound(cmd) => write!(f, "Command \"{}\" not found", cmd),
-            ShellError::Exit => write!(f, "Exiting shell"),
-        }
-    }
-}
-
-impl From<io::Error> for ShellError {
-    fn from(err: io::Error) -> Self {
-        ShellError::IO(err)
     }
 }

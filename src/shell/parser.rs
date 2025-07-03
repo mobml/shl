@@ -1,4 +1,4 @@
-use super::ShellError;
+use super::errors::ShellError;
 
 pub struct Parser;
 

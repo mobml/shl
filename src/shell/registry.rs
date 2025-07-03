@@ -1,6 +1,6 @@
 use super::commands;
 use super::commands::Command;
-use super::{ShellError, parser::ParsedCommand};
+use super::{errors::ShellError, parser::ParsedCommand};
 use std::collections::HashMap;
 use std::io::Write;
 
@@ -27,12 +27,13 @@ impl CommandRegistry {
     ) -> Result<(), ShellError> {
         match self.commands.get(&parsed_cmd.name) {
             Some(cmd) => cmd.execute(&parsed_cmd.args, stdout),
-            None => Err(ShellError::CommandNotFound(parsed_cmd.name.to_string())),
+            None => Err(ShellError::CommandNotFound(parsed_cmd.name)),
         }
     }
 
     pub fn init_commands(&mut self) {
         self.register("hello".to_string(), commands::HelloCommand::new());
         self.register("exit".to_string(), commands::ExitCommand::new());
+        self.register("pwd".to_string(), commands::PwdCommand::new());
     }
 }

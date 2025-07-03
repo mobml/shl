@@ -1,4 +1,4 @@
-use shell::ShellError;
+use shell::errors::ShellError;
 
 mod shell;
 
