@@ -49,6 +49,9 @@ impl Shl {
             match self.parser.parse(&input) {
                 Ok(command) => match self.registry.run_command(command, &mut stdout) {
                     Err(ShellError::Exit) => break,
+                    Err(ShellError::ArgNotFound(msg)) => {
+                        writeln!(stdout, "{}", ShellError::ArgNotFound(msg))?
+                    }
                     Err(e) => writeln!(stdout, "Error: {e}")?,
                     _ => {}
                 },

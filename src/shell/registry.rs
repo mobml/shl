@@ -35,5 +35,6 @@ impl CommandRegistry {
         self.register("hello".to_string(), commands::HelloCommand::new());
         self.register("exit".to_string(), commands::ExitCommand::new());
         self.register("pwd".to_string(), commands::PwdCommand::new());
+        self.register("cd".to_string(), commands::CdCommand::new());
     }
 }

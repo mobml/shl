@@ -8,6 +8,8 @@ pub enum ShellError {
     Parse(String),
     CommandNotFound(String),
     Exit,
+    ArgNotFound(String),
+    DirNotFound(String),
 }
 
 impl Display for ShellError {
@@ -17,6 +19,8 @@ impl Display for ShellError {
             ShellError::Parse(msg) => write!(f, "Parse error: {}", msg),
             ShellError::CommandNotFound(cmd) => write!(f, "Command \"{}\" not found", cmd),
             ShellError::Exit => write!(f, "Exiting shell"),
+            ShellError::ArgNotFound(cmd) => write!(f, "shl: expected argument to \"{}\"", cmd),
+            ShellError::DirNotFound(dir) => write!(f, "shl: \"{}\" not found", dir),
         }
     }
 }

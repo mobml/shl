@@ -14,6 +14,8 @@ fn main() {
             ShellError::IO(_) => eprintln!("Error I/O"),
             ShellError::CommandNotFound(str) => eprintln!("{}", str),
             ShellError::Exit => {}
+            ShellError::ArgNotFound(_) => {}
+            ShellError::DirNotFound(_) => {}
         },
     }
 }
