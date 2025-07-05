@@ -75,6 +75,11 @@ impl Command for CdCommand {
         let pwd = env::current_dir()?;
         let mut path = PathBuf::from(pwd);
         let name = &args[0];
+
+        if name == "~" {
+            super::set_home_dir()?;
+            return Ok(());
+        }
         path.push(name);
 
         if !path.is_dir() {
@@ -85,7 +90,6 @@ impl Command for CdCommand {
         if let Some(s) = path.to_str() {
             writeln!(stdout, "{s}")?
         }
-        println!("Current OS: {}", std::env::consts::OS);
 
         Ok(())
     }
