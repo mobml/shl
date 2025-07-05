@@ -1,7 +1,6 @@
 use super::errors::ShellError;
 use std::env;
 use std::io::Write;
-use std::path::PathBuf;
 
 pub trait Command {
     fn execute(&self, args: &[String], stdout: &mut dyn Write) -> Result<(), ShellError>;
@@ -68,12 +67,11 @@ impl Command for PwdCommand {
 }
 
 impl Command for CdCommand {
-    fn execute(&self, args: &[String], stdout: &mut dyn Write) -> Result<(), ShellError> {
-        if args.len() == 0 {
+    fn execute(&self, args: &[String], _stdout: &mut dyn Write) -> Result<(), ShellError> {
+        if args.is_empty() {
             return Err(ShellError::ArgNotFound("cd".to_string()));
         }
-        let pwd = env::current_dir()?;
-        let mut path = PathBuf::from(pwd);
+        let mut path = env::current_dir()?;
         let name = &args[0];
 
         if name == "~" {
@@ -87,10 +85,6 @@ impl Command for CdCommand {
         }
 
         env::set_current_dir(&path)?;
-        if let Some(s) = path.to_str() {
-            writeln!(stdout, "{s}")?
-        }
-
         Ok(())
     }
 }
