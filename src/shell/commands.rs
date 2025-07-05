@@ -85,6 +85,7 @@ impl Command for CdCommand {
         if let Some(s) = path.to_str() {
             writeln!(stdout, "{s}")?
         }
+        println!("Current OS: {}", std::env::consts::OS);
 
         Ok(())
     }

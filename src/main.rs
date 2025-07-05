@@ -16,6 +16,7 @@ fn main() {
             ShellError::Exit => {}
             ShellError::ArgNotFound(_) => {}
             ShellError::DirNotFound(_) => {}
+            ShellError::HomeDirNotFound => {}
         },
     }
 }

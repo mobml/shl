@@ -5,6 +5,7 @@ use std::io::stdout;
 use std::io::{self, Write};
 
 mod commands;
+mod env;
 pub mod errors;
 mod parser;
 mod registry;
@@ -25,12 +26,11 @@ impl Shl {
     //TODO
     // Separate function to initialize the register     [x]
     // Implement the remaining Commands                 [_]
-    // Handle errors properly                           [_]
 
     pub fn run(&mut self) -> Result<(), ShellError> {
         self.registry.init_commands();
         // Add home_dir
-
+        set_home_dir()?;
         let mut stdout = stdout();
 
         let prompt = "\x1b[32m$ \x1b[0m";
@@ -60,4 +60,10 @@ impl Shl {
         }
         Ok(())
     }
+}
+
+pub fn set_home_dir() -> Result<(), ShellError> {
+    let home = env::get_home().map_err(|_| ShellError::HomeDirNotFound)?;
+    std::env::set_current_dir(home)?;
+    Ok(())
 }

@@ -10,6 +10,7 @@ pub enum ShellError {
     Exit,
     ArgNotFound(String),
     DirNotFound(String),
+    HomeDirNotFound,
 }
 
 impl Display for ShellError {
@@ -21,6 +22,7 @@ impl Display for ShellError {
             ShellError::Exit => write!(f, "Exiting shell"),
             ShellError::ArgNotFound(cmd) => write!(f, "shl: expected argument to \"{}\"", cmd),
             ShellError::DirNotFound(dir) => write!(f, "shl: \"{}\" not found", dir),
+            ShellError::HomeDirNotFound => write!(f, "shl: home directory not found"),
         }
     }
 }
