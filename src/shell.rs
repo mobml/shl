@@ -8,6 +8,7 @@ mod commands;
 mod env;
 pub mod errors;
 mod parser;
+mod prompt;
 mod registry;
 
 pub struct Shl {
@@ -33,12 +34,14 @@ impl Shl {
         set_home_dir()?;
         let mut stdout = stdout();
 
-        let prompt = "\x1b[32m$ \x1b[0m";
+        //let prompt = "\x1b[32m$ \x1b[0m";
+        let mut prompt = prompt::Prompt::new()?;
         let mut input = String::new();
         loop {
             input.clear();
+            prompt.set_path()?;
             //show the prompt
-            write!(stdout, "{prompt}")?;
+            write!(stdout, "{}", prompt.get_path())?;
             stdout.flush()?;
             // Read user input
             if io::stdin().read_line(&mut input)? == 0 {
